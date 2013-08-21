@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{#
+    1, the filename 'category.html' means you can render this template by visiting /category or /category/<more-path>
+    2, just `/category`, the variable `category` will be None, and if `/category/<this-is-category-folder-path>` will
+        try to match a Category object.
+ #}
+
+{% block title %}{{ category.title or 'Categories' }}{% endblock %}
+
+{% block content %}
+    {% if category %}
+        <div class="container" id="posts">
+            {% include 'include/posts_list.html' %}
+        </div>
+
+    {% else %}
+        <ul class="categories" id="categories">
+        {% for category in  categories%}
+            <li>
+                <a href="/category/{{ category.path }}">
+                    <h3>{{ category.title }}</h3>
+                    <span> {{ category.posts_count }} 篇文章</span>
+                </a>
+            </li>
+        {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+{% endblock %}

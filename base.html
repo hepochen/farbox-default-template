@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+
+    <link rel='alternate' type='application/rss+xml' title='atom 1.0' href='/feed' />
+    <title>{% block title %}{{ request.args.s or site.title }} {% endblock %}</title>
+
+    <link href="{{ resource_host }}/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!--[if IE 7]>
+    <link href="{{ resource_host }}/css/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
+     <link rel="stylesheet" href="{{ resource_host }}/css/comment.css?version={{ resource_version }}">
+    <link rel="stylesheet" href="{{ resource_host }}/lib/pure.css">
+    <link rel="stylesheet" href="{{ resource_host }}/site/css/blog.css">
+
+    {% block head %}
+    {% endblock %}
+
+</head>
+<body>
+
+<div class="pure-g-r" id="layout">
+
+    <div class="sidebar pure-u">
+        <div id="avatar">
+			<a href="/">
+				<img class="logo" src="{{ site.avatar }}" alt="{{ site.title }}">
+			</a>
+		</div>
+
+        <h1 class="brand-title">{{ site.title }}</h1>
+
+        <ul class="nav">
+            {% if has('images') %}
+            <li> <a href="/album">Albums</a></li>
+            {% endif %}
+            <li>{{ a_with_selected('/category', 'Categories') }}</li>
+            <li>{{ a_with_selected('/archive', 'Archive', equal=True) }}</li>
+            {% if site.tags %}
+            <li>{{ a_with_selected('/archive?use=tags', 'Tags') }}</li>
+            {% endif %}
+            {% if has('about.md') %}
+            <li>{{ a_with_selected('/about.md', 'About') }}</li>
+            {% endif %}
+            <li> <a href="/feed">RSS</a> </li>
+        </ul>
+
+        <ul class="my-socials">
+            {% set socials=['twitter', 'weibo', 'facebook', 'instagram', 'quora', 'github'] %}
+            {% for social in socials %}
+                {% if site.configs.get(social) %}
+            <li >
+                <a href="{{ get_social_url(social, site.configs.get(social)) }}" class="{{ social }}" target="_blank">
+                    <i class="icon-{{ social }}"></i>
+                </a>
+            </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <div class="search-bar">
+            <input type="text" id='search-bar' value="{{ request.args.s }}" onkeyup="if (event.keyCode == 13) search();">
+            <a href="javascript:search()">
+                <i class="icon-search"></i>
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="pure-u-1">
+        <div id="main">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% include 'include/footer.html' %}
+    </div>
+
+
+    <script type="text/javascript">
+        function search(){
+            if (document.getElementById('search-bar').value){
+                location.href='http://'+location.host+'?s='+document.getElementById('search-bar').value
+            }
+            else{
+                return false;
+            }
+        }
+
+    </script>
+
+    {% if not site.configs.post_content_type=='plain' %}
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full.js" type= "text/javascript">
+       MathJax.Hub.Config({
+           tex2jax: {
+                inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+                },
+            extensions: ["jsMath2jax.js", 'tex2jax.js'],
+            messageStyle: "none"
+        });
+    </script>
+    {% endif %}
+
+</div>
+
+
+</body>
+</html>
+
+

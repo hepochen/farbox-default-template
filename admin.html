@@ -2,6 +2,10 @@
 <html>
 <head>
     {% set site = get_site(request.args.site_id) or site %}
+    {% if not is_admin(site) %}
+        {{ redirect_to_login() }}
+    {% endif %}
+    {{ change_role(site.id) }}
     <meta charset="utf-8">
     <title>{{ site.title }} - Admin</title>
 
@@ -12,7 +16,7 @@
 
     <link rel="stylesheet" href="{{ resource_host }}/lib/pure.css">
 
-    <link rel="stylesheet" type="text/css" href="{{ resource_host }}/site//css/dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ resource_host }}/site/css/dashboard.css"/>
 
     <script type="text/javascript" src="http://resource.farbox.com/lib/jquery/1.8.1-jquery.min.js"></script>
     <script type="text/javascript" src="http://resource.farbox.com/lib/knockout-2.2.1.js"></script>
@@ -198,7 +202,7 @@
                 <!-- ko if: current_template_key() && current_template_key()!=site_template_key() -->
                     <!-- ko if: current_template_key()!='default' -->
                     <input type="checkbox" id="auto_update_template" data-bind="checked: auto_update_template"/>
-                    <label for="auto_update_template">自动更新</label>
+                    <label for="auto_update_template">保持更新</label>
                     <!-- /ko -->
                 <button class="pure-button pure-button-primary" data-bind="click:use_this_template">使用这个模板</button>
                 <a target="_blank" class="pure-button" data-bind="visible: current_template().source_url, attr:{href: current_template().source_url}">获取源码</a>
@@ -231,8 +235,8 @@
     </script>
 
 
-    <script>
-        {{ change_role(site.id) }}
+    <script type="text/javascript">
+
         var account = {{ jsonify(get_site_owner_account()) }};
         var config_pages = {{ jsonify(get_interface(site)) }};
          var folders = {{ jsonify(get_data(types='folder', path='/', level=1, limit=30, with_page=False))}};

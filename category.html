@@ -9,14 +9,14 @@
 {% block title %}{{ category.title or 'Categories' }}{% endblock %}
 
 {% block content %}
-    {% if category %}
+    {% if request.path not  in ['/category', '/cateogroy/'] %}
         <div class="container" id="posts">
             {% include 'include/posts_list.html' %}
         </div>
 
     {% else %}
         <ul class="categories" id="categories">
-        {% for category in  categories%}
+        {% for category in  get_data(type='folder', level=[1,2], min_posts_count=1) %}
             <li>
                 <a href="/category/{{ category.path }}">
                     <h3>{{ category.title }}</h3>
@@ -26,6 +26,7 @@
         {% endfor %}
 
         </ul>
+
 
     {% endif %}
 
